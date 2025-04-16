@@ -1,5 +1,6 @@
 package com.javanauta.cadastro_usuario.business;
 
+import com.javanauta.cadastro_usuario.api.converter.UsuarioConverter;
 import com.javanauta.cadastro_usuario.api.request.UsuarioRequestDTO;
 import com.javanauta.cadastro_usuario.api.response.UsuarioResponsetDTO;
 import com.javanauta.cadastro_usuario.infrastructure.entities.UsuarioEntity;
@@ -11,14 +12,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioConverter usuarioConverter;
 
-    private void salvaUsuario(UsuarioEntity usuarioEntity){
-        usuarioRepository.save(usuarioEntity);
+    private UsuarioEntity salvaUsuario(UsuarioEntity usuarioEntity){
+
+        return usuarioRepository.saveAndFlush(usuarioEntity);
     }
 
     public UsuarioResponsetDTO gravarUsuarios(UsuarioRequestDTO usuarioRequestDTO){
         try {
-            salvaUsuario();
+            UsuarioEntity usuarioEntity = salvaUsuario(usuarioConverter.paraUsuarioEntity(usuarioRequestDTO));
+            return usuarioConverter.paraUsuarioReponseDTO(usuarioEntity);
         }
     }
 }
